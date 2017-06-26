@@ -83,7 +83,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'com': resolve('src/com'),
-	   'helper': resolve('src/helper')
+	   'helper': resolve('src/helper'),
+	   'assets': resolve('src/assets'),
     }
   },
   devServer: {
