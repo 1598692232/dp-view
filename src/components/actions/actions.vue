@@ -1,0 +1,78 @@
+<template>
+    <div vui-action>
+        <div class="action-body">
+            <ul class="action-list">
+                <li v-for="(item,index) in actions" @click="actionClick(item, index)">
+                    {{item.value}}
+                </li>
+            </ul>
+            <div class="action-cancel" @click="cancel">
+                取消
+            </div>
+        </div>
+    </div>
+</template>
+<style>
+    .action-body{
+        width:100%;
+        position: fixed;
+        bottom:0;
+        left:0;
+        background: #eee;
+        z-index:1000;
+        animation:action-show 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    .action-list li{
+        line-height: 2;
+    }
+    @keyframes action-show{
+        0%{
+            transform:translateY(100%)
+        }
+        100%{
+            transform:translateY(0)
+        }
+    }
+    @keyframes action-hide{
+        0%{
+            transform:translateY(0)
+        }
+        100%{
+            transform:translateY(100%)
+        }
+    }
+</style>
+<script>
+    import Util from '../../util/util'
+    import $backDesk from '../backdesk/index'
+    export default {
+      props: {
+        actions: {
+          type: Array,
+          require: true
+        },
+        actionEvent: {
+          type: Function
+        }
+      },
+
+      destroyed() {
+        this.$el.querySelector('.action-body').style.animation = 'action-hide 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards'
+        setTimeout(() => {
+          let util = new Util()
+          util.removeElement('[vui-action]', 200)
+        }, 350)
+      },
+
+      methods: {
+        actionClick(item, index) {
+          this.actionEvent(item, index)
+        },
+
+        cancel() {
+          this.$destroy()
+          $backDesk.hide()
+        }
+      }
+    }
+</script>
