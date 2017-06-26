@@ -30,7 +30,7 @@ module.exports = {
     "spaced-comment": 0,
     "no-irregular-whitespace": 1,
     "no-multi-spaces": 0,
-    "indent": [0, 4],
+    "indent": ["error", 4],
     "no-multiple-empty-lines": [2, {"max": 2}],
   }
 }

@@ -8,11 +8,11 @@ Vue.use(VueScroller);
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
-      path: '/datepicker',
-      name: 'Datepicker',
-      component: Datepicker
-    }
-  ]
+    routes: [
+        {
+            path: '/datepicker',
+            name: 'Datepicker',
+            component: Datepicker
+        }
+    ]
 });

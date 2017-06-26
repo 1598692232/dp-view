@@ -3,35 +3,35 @@
  */
 
 export default {
-	css() {
+    css() {
 
-	},
+    },
 
-	hasClass() {
+    hasClass() {
 
-	},
+    },
 
-	addClass() {
+    addClass() {
 
-	},
+    },
 
-	removeClass() {
+    removeClass() {
 
-	},
+    },
 
-	$() {
+    $() {
 
-	},
+    },
 
-	screenPosition() {
+    screenPosition() {
 
-	},
+    },
 
-	domPosition() {
+    domPosition() {
 
-	},
+    },
 
-	bodyPosition() {
+    bodyPosition() {
 
-	}
-}
+    }
+};

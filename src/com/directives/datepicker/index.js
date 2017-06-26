@@ -3,10 +3,11 @@
  */
 import Dob from './datepickerController';
 
-export default {bind(el, binding) {
-		el.addEventListener('click', () => {
-			let date = new Dob(el, binding);
-			date.show();
-		});
-	}
+export default {
+    bind(el, binding) {
+        el.addEventListener('click', () => {
+            let date = new Dob(el, binding);
+            date.show();
+        });
+    }
 };
