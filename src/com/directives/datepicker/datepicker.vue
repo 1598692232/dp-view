@@ -2,13 +2,13 @@
     <div dp-datepicker>
         <div>
             <header>
-                <div class="prev" @click="toPrevMonth">
+                <div class="prev" @click="_toPrevMonth">
                     <i class="fa fa-chevron-left" aria-hidden="true"></i>
                 </div>
                 <div class="title">
                     {{ currentYear }}年{{ currentMonth }}月
                 </div>
-                <div class="next" @click="toNextMonth">
+                <div class="next" @click="_toNextMonth">
                     <i class="fa fa-chevron-right" aria-hidden="true"></i>
                 </div>
             </header>
@@ -27,7 +27,7 @@
                 <tbody id="dp-render-date">
                 <tr v-for="(item, k) in daysGroupAll">
                     <td v-for="(date, i) in item" :data-date="date.val"
-                        @click="_selectDate($event, date.val, k, i)" :class="{today:date.val == today}">
+                        @click="_selectDate($event, date.val, k, i)" :class="{today:date.val == today,'time-active':date.active}">
                         {{ date.label }}
                     </td>
                 </tr>
@@ -40,17 +40,17 @@
                     <ul class= 'list'>
                         <li>
                             <ul class="time-list">
-                                <li v-for="(item, i) in hours" @click="_selectHour(i)" :class="{'time-active':item.active}">{{item.label}}</li>
+                                <li v-for="(item, i) in hours" @click="_selectTime('hours','currentHour', i)" :class="{'time-active':item.active}">{{item.label}}</li>
                             </ul>
                         </li>
                         <li>
                             <ul class="time-list">
-                                <li v-for="(item, i) in minutes" @click="_selectMinute(i)" :class="{'time-active':item.active}">{{item.label}}</li>
+                                <li v-for="(item, i) in minutes" @click="_selectTime('minutes','currentMinute',i)" :class="{'time-active':item.active}">{{item.label}}</li>
                             </ul>
                         </li>
                         <li>
                             <ul class="time-list">
-                                <li v-for="(item, i) in seconds" @click="_selectSecond(i)" :class="{'time-active':item.active}">{{item.label}}</li>
+                                <li v-for="(item, i) in seconds" @click="_selectTime('seconds','currentSecond',i)" :class="{'time-active':item.active}">{{item.label}}</li>
                             </ul>
                         </li>
                     </ul>
@@ -177,7 +177,8 @@
                 for (let i = 1; i <= days; i++) {
                     let d = {
                         label: i,
-                        val: `${this.currentYear}-${this.currentMonth}-${i}`
+                        val: `${this.currentYear}-${this.currentMonth}-${i}`,
+                        active: false
                     };
                     this.calendarDays.push(d);
                 }
@@ -205,7 +206,7 @@
                 return this;
             },
 
-            toPrevMonth() {
+            _toPrevMonth() {
                 this.currentMonth--;
                 if (this.currentMonth == 0) {
                     this.currentYear--;
@@ -221,7 +222,7 @@
                 this._renderDate(date.getDay(), days);
             },
 
-            toNextMonth() {
+            _toNextMonth() {
                 this.currentMonth++;
                 if (this.currentMonth == 13) {
                     this.currentYear++;
@@ -238,8 +239,14 @@
             },
 
             _selectDate(e, val, k, i) {
-                console.log(this.dateTime, 99292);
                 this.currentDate = val;
+                this.daysGroupAll.forEach((v, k) => {
+                    v.forEach((v1, k1) => {
+                        v1.active = false;
+                    });
+                });
+                this.daysGroupAll[k][i].active = true;
+                console.log(this.daysGroupAll[k][i], 888);
                 if (this.dateTime) {
                     this.timeShow = true;
                 } else {
@@ -248,29 +255,12 @@
                 }
             },
 
-            _initTimeActive(o) {
-                o.forEach(v => {
+            _selectTime(o1, o2, i) {
+                this[o1].forEach(v => {
                     v.active = false;
                 });
-            },
-
-            _selectHour(i) {
-                console.log(i);
-                this._initTimeActive(this.hours);
-                this.currentHour = this.hours[i].label;
-                this.hours[i].active = true;
-            },
-
-            _selectMinute(i) {
-                this._initTimeActive(this.minutes);
-                this.currentMinute = this.minutes[i].label;
-                this.minutes[i].active = true;
-            },
-
-            _selectSecond(i) {
-                this._initTimeActive(this.seconds);
-                this.currentSecond = this.seconds[i].label;
-                this.seconds[i].active = true;
+                this[o2] = this[o1][i].label;
+                this[o1][i].active = true;
             },
 
             _changeTimeShow() {
@@ -335,6 +325,10 @@
                 .today{
                     background: #eb5370;
                     color: #fff;
+                }
+                .time-active{
+                    background: #5a80f8 ;
+                    color:#fff;
                 }
             }
         }
