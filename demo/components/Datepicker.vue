@@ -1,7 +1,7 @@
 <template>
   <div class="demo">
         张士大夫士大夫
-      <input type="text" v-datepicker="{onDateSelect:onDateSelect}">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect,dateTime:true}">
   </div>
 </template>
 

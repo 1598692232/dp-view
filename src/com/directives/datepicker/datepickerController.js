@@ -26,6 +26,7 @@ export default class DatepickerController {
             propsData: {
                 el: [this._el],
                 onDateSelect: this._options.onDateSelect,
+                dateTime: this._options.dateTime || false,
                 position: {
                     x: offset.left,
                     y: offset.top + offset.height
