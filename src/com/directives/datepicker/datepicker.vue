@@ -27,39 +27,50 @@
                 <tbody id="dp-render-date">
                 <tr v-for="(item, k) in daysGroupAll">
                     <td v-for="(date, i) in item" :data-date="date.val"
-                        @click="_selectDate($event, date.val, k, i)" :class="{today:date.val==currentDate}">
+                        @click="_selectDate($event, date.val, k, i)" :class="{today:date.val == today}">
                         {{ date.label }}
                     </td>
                 </tr>
                 </tbody>
             </table>
 
-            <div class="time-body">
-                <ul class= 'list'>
-                    <li>
-                        <ul class="time-list">
-                            <li>1</li>
-                            <li>1</li>
-                            <li>1</li>
-                            <li>1</li>
-                            <li>1</li>
-                            <li>1</li>
-                            <li>1</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+            <transition name="scale">
+
+                <div class="time-body" v-if="timeShow">
+                    <ul class= 'list'>
+                        <li>
+                            <ul class="time-list">
+                                <li v-for="(item, i) in hours" @click="_selectHour(i)" :class="{'time-active':item.active}">{{item.label}}</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <ul class="time-list">
+                                <li v-for="(item, i) in minutes" @click="_selectMinute(i)" :class="{'time-active':item.active}">{{item.label}}</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <ul class="time-list">
+                                <li v-for="(item, i) in seconds" @click="_selectSecond(i)" :class="{'time-active':item.active}">{{item.label}}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <footer class="timer-footer">
+                        <button @click="_changeTimeShow">取消</button>
+                        <button @click="_sureTime">确定</button>
+                    </footer>
+                </div>
+            </transition>
+
         </div>
     </div>
 </template>
 <script>
-//    import 'assets/css/font-awesome.css';
     import _ from 'helper/helper';
 
     const [BIG_MONTHS, SMALL_MONTHS] = [[1, 3, 5, 7, 8, 10, 12], [4, 6, 9, 11]];
 
     function getDays(month, year) {
-        var days = 0;
+        let days = 0;
         if (BIG_MONTHS.indexOf(month) > -1) {
             days = 31;
         } else if (SMALL_MONTHS.indexOf(month) > -1) {
@@ -68,6 +79,30 @@
             days = year % 100 === 0 ? (year % 400 === 0 ? 29 : 28 ) : (year % 4 === 0 ? 29 : 28);
         }
         return days;
+    }
+
+    function getHours() {
+        let hoursArgs = [];
+        for (let i = 0; i < 24; i++) {
+            hoursArgs.push({
+                label: i < 10 ? '0' + i : i,
+                val: i,
+                active: false
+            });
+        }
+        return hoursArgs;
+    }
+
+    function getMinutesOrSeconds() {
+        let minutesOrSecondsArgs = [];
+        for (let i = 0; i < 60; i++) {
+            minutesOrSecondsArgs.push({
+                label: i < 10 ? '0' + i : i,
+                val: i,
+                active: false
+            });
+        }
+        return minutesOrSecondsArgs;
     }
 
     const date = new Date();
@@ -94,6 +129,11 @@
 
             onDateSelect: {
                 type: Function
+            },
+
+            dateTime: {
+                type: Boolean,
+                default: false
             }
         },
 
@@ -105,8 +145,22 @@
                 currentMonth: CURRENT_MONTH,
                 m: CURRENT_MONTH - 1,
                 currentDay: CURRENT_DATE,
-                currentDate: `${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}`
+                currentHour: '00',
+                currentMinute: '00',
+                currentSecond: '00',
+                currentDate: '',
+                today: `${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}`,
+                hours: getHours(),
+                minutes: getMinutesOrSeconds(),
+                seconds: getMinutesOrSeconds(),
+                timeShow: false
             };
+        },
+
+        computed: {
+            currentTime() {
+                return `${this.currentHour}:${this.currentMinute}:${this.currentSecond}`;
+            }
         },
 
         mounted() {
@@ -184,8 +238,49 @@
             },
 
             _selectDate(e, val, k, i) {
-                this.el[0].setAttribute('value', val);
-                this.onDateSelect(val, {year: this.currentYear, month: this.currentMonth, day: this.currentDay}, e);
+                console.log(this.dateTime, 99292);
+                this.currentDate = val;
+                if (this.dateTime) {
+                    this.timeShow = true;
+                } else {
+                    this.el[0].setAttribute('value', val);
+                    this.onDateSelect(val, {year: this.currentYear, month: this.currentMonth, day: this.currentDay}, e);
+                }
+            },
+
+            _initTimeActive(o) {
+                o.forEach(v => {
+                    v.active = false;
+                });
+            },
+
+            _selectHour(i) {
+                console.log(i);
+                this._initTimeActive(this.hours);
+                this.currentHour = this.hours[i].label;
+                this.hours[i].active = true;
+            },
+
+            _selectMinute(i) {
+                this._initTimeActive(this.minutes);
+                this.currentMinute = this.minutes[i].label;
+                this.minutes[i].active = true;
+            },
+
+            _selectSecond(i) {
+                this._initTimeActive(this.seconds);
+                this.currentSecond = this.seconds[i].label;
+                this.seconds[i].active = true;
+            },
+
+            _changeTimeShow() {
+                this.timeShow = false;
+            },
+
+            _sureTime() {
+                let dateTime = this.currentDate + ' ' + this.currentTime;
+                this.el[0].setAttribute('value', dateTime);
+                this.onDateSelect(dateTime, {year: this.currentYear, month: this.currentMonth, day: this.currentDay});
             }
         }
     };
@@ -264,15 +359,46 @@
                     .time-list{
                         position: relative;
                         width:100%;
-                        max-height:184px;
+                        max-height:154px;
                         overflow:auto;
                         li{
                             width:100%;
                             line-height: 30px;
                             text-align: center;
+                            cursor: pointer;
+                        }
+                        .time-active{
+                            background: #5a80f8 ;
+                            color:#fff;
                         }
                     }
                 }
+            }
+            .timer-footer{
+                width:100%;
+                margin-top:5px;
+                button{
+                    display: inline-block;
+                    line-height:25px;
+                    border-radius:3px;
+                    padding:0 15px;
+                    border:0;
+                    color:#fff;
+                    cursor:pointer;
+                    &:first-of-type{
+                        float: left;
+                        background: #bdc8ca;
+                     }
+                    &:last-of-type{
+                         float: right;
+                         background: #5a80f8;
+                     }
+                }
+                &:after{
+                    content:'';
+                    display:block;
+                    clear:both;
+                 }
             }
 
         }
@@ -285,5 +411,13 @@
         100% {
             transform: scale(1);
         }
+    }
+    .scale-enter-active, .scale-leave-active {
+        transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1);
+        transform-origin:50% 0;
+        transform: scale(1)
+    }
+    .scale-enter, .scale-leave-to {
+        transform: scale(0)
     }
 </style>
