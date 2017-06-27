@@ -1,11 +1,9 @@
 <template>
   <div class="demo">
-        张士大夫士大夫
+      <header>datepicker</header>
       <input type="text" v-datepicker="{onDateSelect:onDateSelect,dateTime:true}" class="datepicker">
-      <input type="text" v-datepicker="{onDateSelect:onDateSelect,beforeClickDisabled: true}"  class="datepicker">
-      <input type="text" v-datepicker="{onDateSelect:onDateSelect}"  class="datepicker">
-      <input type="text" v-datepicker="{onDateSelect:onDateSelect}"  class="datepicker">
-      <input type="text" v-datepicker="{onDateSelect:onDateSelect}"  class="datepicker">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect,beforeClickDisabled: true}" class="datepicker">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect,beforeClickDisabled: true,dateTime:true}" class="datepicker">
   </div>
 </template>
 
