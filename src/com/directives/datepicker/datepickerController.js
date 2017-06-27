@@ -12,9 +12,7 @@ export default class DatepickerController {
         this._el = el;
         this._binding = binding;
         this._options = binding.value;
-        console.log(binding);
         this._util = new Util();
-        // this._date = new Date();
     }
 
     show () {
@@ -26,10 +24,10 @@ export default class DatepickerController {
         let offset = _.screenPosition(this._el);
         this._vm = new Dob({
             propsData: {
-                // id: this._date,
                 el: [this._el],
                 onDateSelect: this._options.onDateSelect,
                 dateTime: this._options.dateTime || false,
+                beforeClickDisabled: this._options.beforeClickDisabled || false,
                 position: {
                     x: offset.left,
                     y: offset.top + offset.height

@@ -2,6 +2,9 @@
   <div class="demo">
         张士大夫士大夫
       <input type="text" v-datepicker="{onDateSelect:onDateSelect,dateTime:true}" class="datepicker">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect,beforeClickDisabled: true}"  class="datepicker">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect}"  class="datepicker">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect}"  class="datepicker">
       <input type="text" v-datepicker="{onDateSelect:onDateSelect}"  class="datepicker">
   </div>
 </template>

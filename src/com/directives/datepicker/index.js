@@ -17,7 +17,6 @@ export default {
         let date = null;
         vn.elm.setAttribute('dp-date', '');
         el.addEventListener('click', () => {
-            console.log(vn, 9999);
             date = new Dob(el, binding);
             date.show();
         });

@@ -27,7 +27,7 @@
                 <tbody id="dp-render-date">
                 <tr v-for="(item, k) in daysGroupAll">
                     <td v-for="(date, i) in item" :data-date="date.val"
-                        @click="_selectDate($event, date.val, k, i)" :class="{today:date.val == today,'time-active':date.active}">
+                        @click="_selectDate($event, date.val, date)" :class="{today:date.val == today,'time-active':date.active,'disabled':date.disabled}">
                         {{ date.label }}
                     </td>
                 </tr>
@@ -119,23 +119,24 @@
 
     export default {
         props: {
-//            id: {
-//                type: Number
-//            },
-
             el: {
-                type: Array
+                type: Array      //binding元素
             },
 
             position: {
-                type: Object
+                type: Object     //显示位置
             },
 
-            onDateSelect: {
+            onDateSelect: {       //选择之后触发
                 type: Function
             },
 
-            dateTime: {
+            dateTime: {           //是否显示时间表
+                type: Boolean,
+                default: false
+            },
+
+            beforeClickDisabled: {  //今天之前是否可点击
                 type: Boolean,
                 default: false
             }
@@ -183,8 +184,19 @@
                     let d = {
                         label: i,
                         val: `${this.currentYear}-${this.currentMonth}-${i}`,
-                        active: false
+                        active: false,
+                        disabled: false
                     };
+
+                    // 过去日期变成disabled
+                    if (this.beforeClickDisabled) {
+                        let nowDateNumber = new Date(Date.parse(`${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}`.replace(/-/g, '/')));
+                        let dDateNumber = new Date(Date.parse(d.val.replace(/-/g, '/')));
+                        if (nowDateNumber > dDateNumber) {
+                            d.disabled = true;
+                        }
+                    }
+
                     this.calendarDays.push(d);
                 }
 
@@ -206,7 +218,6 @@
                         daysGroup = [];
                     }
                 }
-                console.log(this.daysGroupAll, 8484);
 
                 return this;
             },
@@ -243,15 +254,16 @@
                 this._renderDate(date.getDay(), days);
             },
 
-            _selectDate(e, val, k, i) {
+            _selectDate(e, val, date) {
+                if (date.disabled || Object.keys(date).length == 0) return;
+
                 this.currentDate = val;
                 this.daysGroupAll.forEach((v, k) => {
                     v.forEach((v1, k1) => {
                         v1.active = false;
                     });
                 });
-                this.daysGroupAll[k][i].active = true;
-                console.log(this.daysGroupAll[k][i], 888);
+                date.active = true;
                 if (this.dateTime) {
                     this.timeShow = true;
                 } else {
@@ -334,6 +346,10 @@
                 .time-active{
                     background: #5a80f8 ;
                     color:#fff;
+                }
+                .disabled{
+                    color:#fff;
+                    background: #e1e1e1;
                 }
             }
         }
