@@ -10,8 +10,11 @@ export default class DatepickerController {
     constructor(el, binding) {
         this._vm = null;
         this._el = el;
+        this._binding = binding;
         this._options = binding.value;
+        console.log(binding);
         this._util = new Util();
+        // this._date = new Date();
     }
 
     show () {
@@ -21,9 +24,9 @@ export default class DatepickerController {
 
         let Dob = Vue.extend(datepicker);
         let offset = _.screenPosition(this._el);
-        console.log(offset, 99);
         this._vm = new Dob({
             propsData: {
+                // id: this._date,
                 el: [this._el],
                 onDateSelect: this._options.onDateSelect,
                 dateTime: this._options.dateTime || false,
@@ -33,5 +36,9 @@ export default class DatepickerController {
                 }
             }
         }).$mount('[dp-datepicker]');
+    }
+
+    hide() {
+
     }
 }

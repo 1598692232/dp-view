@@ -119,6 +119,10 @@
 
     export default {
         props: {
+//            id: {
+//                type: Number
+//            },
+
             el: {
                 type: Array
             },
@@ -162,6 +166,7 @@
                 return `${this.currentHour}:${this.currentMinute}:${this.currentSecond}`;
             }
         },
+
 
         mounted() {
             this._renderDate(START_DAY, CURRENT_DAYS);

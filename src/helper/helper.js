@@ -36,30 +36,25 @@ export default {
             x: dom.offsetLeft,
             y: dom.offsetTop
         };
+    },
+
+    closest(el, selector) {
+        var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
+
+        while (el) {
+            if (matchesSelector.call(el, selector)) {
+                break;
+            }
+            el = el.parentElement;
+        }
+        return el;
+    },
+
+    removeElement(attr, duration = 0) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                document.body.removeChild(document.querySelector(attr));
+            }, duration);
+        });
     }
-
-    // l2camel(str) {
-    //     return str.replace(/-(\w)/g, (all, c, index) => {
-    //         console.log(all, c, index, 999);
-    //         return index > 0 ? c.toUpperCase() : c;
-    //     });
-    // },
-
-    // css(element, name, value) {
-    //     if (typeof name === 'object') {
-    //         for (var key in name) {
-    //             this.css(element, key, name[key]);
-    //         }
-    //     } else {
-    //         var camel = this.l2camel(name);
-    //
-    //         if (typeof value === 'undefined') {
-    //             console.log(window.getComputedStyle(element).getPropertyValue(camel));
-    //             return window.getComputedStyle(element).getPropertyValue(camel);
-    //         } else {
-    //             value += (typeof value === 'number' && !/^(?:opacity|zIndex)$/.test(camel) ? 'px' : '');
-    //             element.style[camel] = value;
-    //         }
-    //     }
-    // }
 };
