@@ -69,6 +69,7 @@
 
     const [BIG_MONTHS, SMALL_MONTHS] = [[1, 3, 5, 7, 8, 10, 12], [4, 6, 9, 11]];
 
+    /*获取天数*/
     function getDays(month, year) {
         let days = 0;
         if (BIG_MONTHS.indexOf(month) > -1) {
@@ -81,6 +82,7 @@
         return days;
     }
 
+    /*获取小时*/
     function getHours() {
         let hoursArgs = [];
         for (let i = 0; i < 24; i++) {
@@ -93,6 +95,7 @@
         return hoursArgs;
     }
 
+    /*获取分秒*/
     function getMinutesOrSeconds() {
         let minutesOrSecondsArgs = [];
         for (let i = 0; i < 60; i++) {
@@ -168,7 +171,6 @@
             }
         },
 
-
         mounted() {
             this._renderDate(START_DAY, CURRENT_DAYS);
             let $picker = _.$('[dp-datepicker]');
@@ -177,6 +179,7 @@
         },
 
         methods: {
+            /*渲染日历*/
             _renderDate(date, days) {
                 this.calendarDays = [];
                 this.daysGroupAll = [];
@@ -222,6 +225,7 @@
                 return this;
             },
 
+            /*上个月*/
             _toPrevMonth() {
                 this.currentMonth--;
                 if (this.currentMonth == 0) {
@@ -238,6 +242,7 @@
                 this._renderDate(date.getDay(), days);
             },
 
+            /*下个月*/
             _toNextMonth() {
                 this.currentMonth++;
                 if (this.currentMonth == 13) {
@@ -254,6 +259,7 @@
                 this._renderDate(date.getDay(), days);
             },
 
+            /*选择日期*/
             _selectDate(e, val, date) {
                 if (date.disabled || Object.keys(date).length == 0) return;
 
@@ -272,6 +278,7 @@
                 }
             },
 
+            /*时间单个选定*/
             _selectTime(o1, o2, i) {
                 this[o1].forEach(v => {
                     v.active = false;
@@ -280,10 +287,12 @@
                 this[o1][i].active = true;
             },
 
+            /*显示time*/
             _changeTimeShow() {
                 this.timeShow = false;
             },
 
+            /*时间选定*/
             _sureTime() {
                 let dateTime = this.currentDate + ' ' + this.currentTime;
                 this.el[0].setAttribute('value', dateTime);
