@@ -1,13 +1,13 @@
 <template>
     <div dp-datepicker>
         <header>
-            <div class="prev">
+            <div class="prev" @click="toPrevMonth">
                 <i class="fa fa-chevron-left" aria-hidden="true"></i>
             </div>
             <div class="title">
-                {{ currentYear }}
+                {{ currentYear }}年{{ currentMonth }}月
             </div>
-            <div class="next">
+            <div class="next" @click="toNextMonth">
                 <i class="fa fa-chevron-right" aria-hidden="true"></i>
             </div>
         </header>
@@ -25,7 +25,8 @@
             </thead>
             <tbody id="dp-render-date">
                 <tr v-for="(item, k) in daysGroupAll">
-                    <td v-for="(date, i) in item" :data-date="date.val">
+                    <td v-for="(date, i) in item" :data-date="date.val"
+                        @click="_selectDate($event, date.val, k, i)" :class="{today:date.val==currentDate}">
                          {{ date.label }}
                     </td>
                 </tr>
@@ -35,7 +36,7 @@
 </template>
 <script>
 //    import 'assets/css/font-awesome.css';
-//    import _ from 'helper/helper';
+    import _ from 'helper/helper';
 
     const [BIG_MONTHS, SMALL_MONTHS] = [[1, 3, 5, 7, 8, 10, 12], [4, 6, 9, 11]];
 
@@ -52,20 +53,30 @@
     }
 
     const date = new Date();
+    const CURRENT_DATE =  date.getDate();
+    date.setDate(1);
     const [CURRENT_YEAR,
         CURRENT_MONTH,
         CURRENT_DAYS,
-        CURRENT_DAY,
-        CURRENT_DATE] = [
+        START_DAY] = [
             date.getFullYear(),
             date.getMonth() + 1,
             getDays(date.getMonth() + 1),
-            date.getDay(),
-            date.getDate()];
+            date.getDay()];
 
     export default {
         props: {
+            el: {
+                type: Array
+            },
 
+            position: {
+                type: Object
+            },
+
+            onDateSelect: {
+                type: Function
+            }
         },
 
         data() {
@@ -74,17 +85,23 @@
                 daysGroupAll: [],
                 currentYear: CURRENT_YEAR,
                 currentMonth: CURRENT_MONTH,
+                m: CURRENT_MONTH - 1,
                 currentDay: CURRENT_DATE,
                 currentDate: `${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}`
             };
         },
 
         mounted() {
-            this.renderDate(CURRENT_DAY, CURRENT_DAYS);
+            this._renderDate(START_DAY, CURRENT_DAYS);
+            let $picker = _.$('[dp-datepicker]');
+            _.css($picker, 'left', this.position.x);
+            _.css($picker, 'top', this.position.y);
         },
 
         methods: {
-            renderDate(date, days) {
+            _renderDate(date, days) {
+                this.calendarDays = [];
+                this.daysGroupAll = [];
                 for (let i = 1; i <= days; i++) {
                     let d = {
                         label: i,
@@ -97,7 +114,7 @@
                     this.calendarDays.unshift({});
                 }
 
-                let lastTds = 5 * 7 - this.calendarDays.length;
+                let lastTds = 6 * 7 - this.calendarDays.length;
 
                 for (let i = 0; i < lastTds; i++) {
                     this.calendarDays.push({});
@@ -111,6 +128,46 @@
                         daysGroup = [];
                     }
                 }
+                console.log(this.daysGroupAll, 8484);
+
+                return this;
+            },
+
+            toPrevMonth() {
+                this.currentMonth--;
+                if (this.currentMonth == 0) {
+                    this.currentYear--;
+                    this.currentMonth = 12;
+                    this.m = 11;
+                    date.setYear(this.currentYear);
+                    date.setMonth(this.m);
+                } else {
+                    date.setMonth(--this.m);
+                }
+                let days = getDays(this.currentMonth, this.currentYear);
+                date.setDate(1);
+                this._renderDate(date.getDay(), days);
+            },
+
+            toNextMonth() {
+                this.currentMonth++;
+                if (this.currentMonth == 13) {
+                    this.currentYear++;
+                    this.currentMonth = 1;
+                    this.m = 0;
+                    date.setYear(this.currentYear);
+                    date.setMonth(this.m);
+                } else {
+                    date.setMonth(++this.m);
+                }
+                let days = getDays(this.currentMonth, this.currentYear);
+                date.setDate(1);
+                this._renderDate(date.getDay(), days);
+            },
+
+            _selectDate(e, val, k, i) {
+                this.el[0].setAttribute('value', val);
+                this.onDateSelect(val, {year: this.currentYear, month: this.currentMonth, day: this.currentDay}, e);
             }
         }
     };
@@ -118,8 +175,8 @@
 <style lang="less">
     [dp-datepicker]{
         position: fixed;
-        left:10%;
-        width:300px;
+        /*left:10%;*/
+        width:250px;
         margin:0 auto;
         background-color: #fff;
         border-radius: 4px;
@@ -158,6 +215,10 @@
             tbody{
                 td{
                     cursor: pointer;
+                }
+                .today{
+                    background: #eb5370;
+                    color: #fff;
                 }
             }
         }

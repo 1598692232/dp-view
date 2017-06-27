@@ -1,7 +1,7 @@
 <template>
   <div class="demo">
         张士大夫士大夫
-      <input type="text" v-datepicker="{}">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect}">
   </div>
 </template>
 
@@ -11,6 +11,12 @@
     export default {
         directives: {
             datepicker
+        },
+
+        methods: {
+            onDateSelect: function(val) {
+                console.log(val);
+            }
         }
     };
 </script>
