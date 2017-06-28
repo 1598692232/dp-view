@@ -10,7 +10,6 @@ export default class DatepickerController {
     constructor(el, binding) {
         this._vm = null;
         this._el = el;
-        this._binding = binding;
         this._options = binding.value;
         this._util = new Util();
     }
