@@ -1,7 +1,7 @@
 <template>
   <div class="demo">
       <header>datepicker</header>
-      <input type="text" v-datepicker="{onDateSelect:onDateSelect,dateTime:true}" class="datepicker">
+      <input type="text" v-datepicker="{onDateSelect:onDateSelect,dateTime:true, minTime:'seconds'}" class="datepicker">
       <input type="text" v-datepicker="{onDateSelect:onDateSelect,beforeClickDisabled: true}" class="datepicker">
       <input type="text" v-datepicker="{onDateSelect:onDateSelect,beforeClickDisabled: true,dateTime:true}" class="datepicker">
   </div>

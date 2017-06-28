@@ -26,6 +26,7 @@ export default class DatepickerController {
             propsData: {
                 el: [this._el],
                 onDateSelect: this._options.onDateSelect,
+                minTime: this._options.minTime,
                 dateTime: this._options.dateTime || false,
                 beforeClickDisabled: this._options.beforeClickDisabled || false,
                 position: {

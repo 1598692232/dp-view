@@ -38,17 +38,17 @@
 
                 <div class="time-body" v-if="timeShow">
                     <ul class= 'list'>
-                        <li>
+                        <li v-if="isHourMinuteSeconds >= 0" :style="{width: isHourMinuteSeconds == 2 ? '33.33%' : (isHourMinuteSeconds == 1 ? '50%' : '100%')}">
                             <ul class="time-list">
                                 <li v-for="(item, i) in hours" @click="_selectTime('hours','currentHour', i)" :class="{'time-active':item.active}">{{item.label}}</li>
                             </ul>
                         </li>
-                        <li>
+                        <li  v-if="isHourMinuteSeconds >= 1"  :style="{width: isHourMinuteSeconds == 1 ? '50%' : '33.33%'}">
                             <ul class="time-list">
                                 <li v-for="(item, i) in minutes" @click="_selectTime('minutes','currentMinute',i)" :class="{'time-active':item.active}">{{item.label}}</li>
                             </ul>
                         </li>
-                        <li>
+                        <li  v-if="isHourMinuteSeconds >= 2">
                             <ul class="time-list">
                                 <li v-for="(item, i) in seconds" @click="_selectTime('seconds','currentSecond',i)" :class="{'time-active':item.active}">{{item.label}}</li>
                             </ul>
@@ -142,6 +142,10 @@
             beforeClickDisabled: {  //今天之前是否可点击
                 type: Boolean,
                 default: false
+            },
+
+            minTime: {
+                type: String   //最小时间维度
             }
         },
 
@@ -168,6 +172,21 @@
         computed: {
             currentTime() {
                 return `${this.currentHour}:${this.currentMinute}:${this.currentSecond}`;
+            },
+
+            isHourMinuteSeconds() {
+                if (this.dateTime && ['hour', 'minute', 'seconds'].indexOf(this.minTime) > -1) {
+                    switch (this.minTime) {
+                    case 'hour':
+                        return 0;
+                    case 'minute':
+                        return 1;
+                    case 'seconds':
+                        return 2;
+                    }
+                } else {
+                    return '';
+                }
             }
         },
 
